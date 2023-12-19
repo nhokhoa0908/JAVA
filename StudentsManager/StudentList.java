@@ -1,0 +1,106 @@
+package StudentsManager;
+
+import java.util.ArrayList;
+
+public class StudentList extends ArrayList<Student> {
+    public StudentList(){
+        super();
+    }
+
+    //search a student based on student's code. Return the student found
+    public Student search(String code) {
+        code = code.trim().toUpperCase();
+        for(int i=0; i<this.size(); i++)
+            if (this.get(i).getCode().equals(code)) return this.get(i);
+        return null;    
+    }
+
+    //checking whether a code is dulicated or not?
+    private boolean isCodeDupplicated (String code){
+        code= code.trim().toUpperCase();
+        return search(code)!=null;
+    }
+
+    public void addStudent() {
+        String newCode, newName;
+        int newMark;
+        boolean codeDuplicated=false;
+        do{
+            newCode = Inputer.InputPattern("St. code s000: ", "[sS][\\d]{3}");
+            newCode = newCode.trim().toUpperCase();
+            codeDuplicated = isCodeDupplicated(newCode);
+            if (codeDuplicated)System.out.println("Code is duplicated!");
+        }
+        while (codeDuplicated==true);
+        newName = Inputer.InputNonBlankStr("Name of the new student: ");
+        newName = newName.toUpperCase();
+        newMark = Inputer.InputerInt("Mark: ", 0, 10);
+
+        Student st = new Student(newCode, newName , newMark);
+        
+        this.add(st);
+        System.out.println("Student "+ newCode + "has been added");
+    }
+
+    public void searchStudent() {
+        if(this.isEmpty())
+            System.out.println("Empty list. No search be performed!");
+        else{
+            String scode = Inputer.InputStr("Input student code for search:");
+            Student st= this.search(scode);
+            if (st==null)
+                System.out.println("Student " + scode + "doesn't existed");
+            else System.out.println("Found: " + st);    
+        }    
+    }
+
+    public void updateStudent() {
+        if(this.isEmpty())
+            System.out.println("Empty list .No update can be performed");
+        else {
+            String ucode = Inputer.InputStr("Input code of updated student:");
+            Student st = this.search(ucode);
+            if(st==null)
+                System.out.println("Student " + ucode + "doesn't existed!");
+            else{
+                String oldName = st.getName();
+                String msg = "old name: " + oldName + ", new name:";
+                String newName = Inputer.InputNonBlankStr(msg);
+                st.setName(newName);
+
+                int oldMark = st.getMark();
+                msg = "Old mark: " + oldMark + ", new mark 0..10:";
+                int newMark = Inputer.InputerInt(msg, 0, 10);
+                st.setMark(newMark);
+                System.out.println("Student " + ucode + " has been updated.");
+            }    
+        }    
+    }
+
+    public void removeStudent() {
+        if (this.isEmpty())
+            System.out.println("Empty list. No remove can be performed!");
+        else {
+            String rcode = Inputer.InputStr("Input code of removed student:");
+            Student st = this.search(rcode);
+            if (st==null)
+                System.out.println("Student " + rcode + " doesn't existed!");
+            else{
+                this.remove(st);
+                System.out.println("Student "+ rcode + "has been removed.");  
+            } 
+        }    
+    }
+
+    public void printAll() {
+        if(this.isEmpty())
+            System.out.println("Empty list!");
+        else{
+            System.out.println("Student list:");
+            for(Student st: this)
+            System.out.println(st);
+            System.out.println("Total: " + this.size() + " student(s).");
+        }    
+    }
+    
+}
